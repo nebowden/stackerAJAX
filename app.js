@@ -6,6 +6,14 @@ $(document).ready( function() {
 		var tags = $(this).find("input[name='tags']").val();
 		getUnanswered(tags);
 	});
+
+	$('.inspiration-getter').submit( function(event){
+		// zero out results if previous search has run
+		$('.results').html('');
+		// get the value of the tags the user submitted
+		var answerers = $(this).find("input[name='answerers']").val();
+		getAnswerers(answerers);
+	});
 });
 
 // this function takes the question object returned by StackOverflow 
@@ -80,6 +88,60 @@ var getUnanswered = function(tags) {
 		$.each(result.items, function(i, item) {
 			var question = showQuestion(item);
 			$('.results').append(question);
+		});
+	})
+	.fail(function(jqXHR, error, errorThrown){
+		var errorElem = showError(error);
+		$('.search-results').append(errorElem);
+	});
+};
+
+var showUser = function(user) {
+
+	var result = $('.templates .answerer').clone();
+
+	var imageElem = result.find('.user-image');
+	imageElem.attr('src', user.user.profile_image);
+
+	var userElem = result.find('.user-name a');
+	userElem.attr('href', user.user.link);
+	userElem.text(user.user.display_name);
+
+	var repElem = result.find('.reputation');
+	repElem.text(user.user.reputation);
+
+	var postElem = result.find('.post-count');
+	postElem.text(user.post_count);
+
+	var scoreElem = result.find('.topic-score');
+	scoreElem.text(user.score);
+
+	console.log(user);
+	return result;
+}
+
+
+var getAnswerers = function(answerers){
+	var request = {
+		tag: answerers,
+		period: 'all_time',
+		site: 'stackoverflow'
+	};
+	var result = $.ajax({
+		url: 'http://api.stackexchange.com/2.2/tags/' + answerers + '/top-answerers/all_time',
+		data: request,
+		dataType: "jsonp",
+		type: "GET",
+	})
+	.done(function(result){
+		
+		var searchResults = showSearchResults(request.tag, result.items.length);
+
+		$('.search-results').html(searchResults);
+
+		$.each(result.items, function(index, item) {
+			var user = showUser(item);
+			$('.results').append(user);
 		});
 	})
 	.fail(function(jqXHR, error, errorThrown){

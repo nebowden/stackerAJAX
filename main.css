@@ -44,3 +44,13 @@
 	background-color: #F78181;
 	padding: 1em;
 }
+
+.user-image {
+	margin-right: 10px;
+	display: inline-block;
+}
+
+.user-info {
+	display: inline-block;
+	vertical-align: top;
+}
