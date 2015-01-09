@@ -96,6 +96,8 @@ var getUnanswered = function(tags) {
 	});
 };
 
+/* method for displaying top answerer data */
+
 var showUser = function(user) {
 
 	var result = $('.templates .answerer').clone();
@@ -116,10 +118,10 @@ var showUser = function(user) {
 	var scoreElem = result.find('.topic-score');
 	scoreElem.text(user.score);
 
-	console.log(user);
 	return result;
 }
 
+/* call to StackOverflow API */
 
 var getAnswerers = function(answerers){
 	var request = {
